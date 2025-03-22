@@ -1,6 +1,6 @@
 {
   "name": "com.shamanlvlgod.shamanspool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Shamans Pool",
   "description": "Shamans Pool is a lightweight, pure C# object pooling system with a clean and modular Unity integration. It provides generic pooling support with lifecycle hooks and MonoBehaviour-aware extensions for Unity projects.",
   "unity": "2022.3",

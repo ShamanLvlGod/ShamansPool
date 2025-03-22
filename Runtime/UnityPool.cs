@@ -1,15 +1,29 @@
+using System;
 using UnityEngine;
 
 namespace Utils
 {
     public class UnityPool<T> : MonoBehaviour, IPool<T> where T : Component
     {
-        [Header("Pool Settings")]
-        [SerializeField] private T prefab;
+        [Header("Pool Settings")] [SerializeField]
+        private T prefab;
+
         [SerializeField] private int preloadAmount = 0;
         [SerializeField] private Transform poolRoot;
 
         private Pool<T> _pool;
+
+        public Action<T> OnBeforeGet
+        {
+            get => _pool.OnBeforeGet;
+            set => _pool.OnBeforeGet = value;
+        }
+
+        public Action<T> OnBeforeReturn
+        {
+            get => _pool.OnBeforeReturn;
+            set => _pool.OnBeforeReturn = value;
+        }
 
         private void Awake()
         {
