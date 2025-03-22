@@ -3,18 +3,8 @@ using System.Collections.Generic;
 
 namespace Utils
 {
-    public interface IPool<T>
-    {
-        T Get();
-        void Release(T item);
-    }
 
-    public interface IPoolable
-    {
-        void OnTakenFromPool();
-        void OnReturnedToPool();
-    }
-
+    
     public class Pool<T> : IPool<T>
     {
         private readonly Stack<T> _stack = new();
