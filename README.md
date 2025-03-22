@@ -1,16 +1,17 @@
 # 🔮 Shamans Pool
 
-A lightweight, plug-and-play **object pooling** system for Unity, built with ❤️ by [@ShamanLvlGod](https://github.com/shamanlvlgod).  
-It features a **pure C# generic core** and a powerful **Unity-aware layer** for pooling `MonoBehaviour`-based objects cleanly and efficiently.
+A lightweight, plug-and-play **object pooling** system designed for **pure C#** and **Unity** — built with ❤️ by [@ShamanLvlGod](https://github.com/shamanlvlgod).  
+This is **not a Unity-specific-only pool** — it’s a **general-purpose pooling system** with a Unity-aware integration layer for prefab and `MonoBehaviour` support.
 
 ---
 
 ## ✨ Features
 
-- ⚡ Simple and dependency-free
+- ⚡ Simple and dependency-free core
+- 🧱 Works with **any type**, not just Unity objects
 - 🧠 Optional `IPoolable` interface for lifecycle hooks
-- 🧱 Generic pool works with any type
-- 🎮 Unity-specific layer for prefab management, parenting, and activation
+- 🪝 Built-in `OnBeforeGet` and `OnBeforeReturn` actions for full control
+- 🎮 Unity-specific component for prefab pooling, activation, and parenting
 - 🧩 Just plug your prefab in the Inspector and go
 
 ---
@@ -27,7 +28,20 @@ Add this to your Unity project's `manifest.json`:
 
 ---
 
-## 🧪 Example Usage
+## 🪝 Built-in Pool Hooks
+
+You can assign global lifecycle actions on any pool:
+
+```csharp
+pool.OnBeforeGet = obj => Debug.Log("About to use: " + obj);
+pool.OnBeforeReturn = obj => Debug.Log("Returning to pool: " + obj);
+```
+
+These fire **before the object is handed to you**, and **before it goes back into the pool**.
+
+---
+
+## 🧪 Example: Unity Object with IPoolable
 
 ### 1. Pooled prefab with optional `IPoolable`:
 
@@ -61,11 +75,11 @@ public class Enemy : MonoBehaviour, IPoolable
 }
 ```
 
-> Implementing `IPoolable` is optional. If the object does, the pool will automatically call the hooks.
+> Implementing `IPoolable` is optional. If the object does, the pool automatically calls the hooks.
 
 ---
 
-### 2. Your pool component:
+### 2. Your Unity pool component:
 
 ```csharp
 public class EnemySpawner : UnityPool<Enemy>
@@ -85,6 +99,33 @@ public class EnemySpawner : UnityPool<Enemy>
 - Assign your `Enemy` prefab in the Inspector
 - Set `Preload Amount` if desired
 - Done. You're pooling like a pro 🔁
+
+---
+
+## 🧪 Example: Pure C# Pool (non-MonoBehaviour)
+
+```csharp
+public class BulletData
+{
+    public int Damage;
+    public float Speed;
+}
+```
+
+```csharp
+var pool = new Pool<BulletData>(
+    createFunc: () => new BulletData(),
+    preload: 10
+);
+
+pool.OnBeforeGet = bullet => bullet.Damage = 10;
+
+BulletData b = pool.Get();
+// use it...
+pool.Release(b);
+```
+
+> No Unity involved — works like a pure, reusable data structure.
 
 ---
 
