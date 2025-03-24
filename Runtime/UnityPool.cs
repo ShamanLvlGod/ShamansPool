@@ -1,66 +1,14 @@
-using System;
 using UnityEngine;
 
 namespace Utils
 {
-    public class UnityPool<T> : MonoBehaviour, IPool<T> where T : Component
+    public class UnityPool<T> : BaseUnityPool<T> where T : Component
     {
-        [Header("Pool Settings")] [SerializeField]
-        private T prefab;
+        [SerializeField] private T archetype;
 
-        [SerializeField] private int preloadAmount = 0;
-        [SerializeField] private Transform poolRoot;
-
-        private Pool<T> _pool;
-
-        public Action<T> OnBeforeGet
+        protected override T GetArchetype()
         {
-            get => _pool.OnBeforeGet;
-            set => _pool.OnBeforeGet = value;
-        }
-
-        public Action<T> OnBeforeReturn
-        {
-            get => _pool.OnBeforeReturn;
-            set => _pool.OnBeforeReturn = value;
-        }
-
-        private void Awake()
-        {
-            if (prefab == null)
-            {
-                Debug.LogError($"[{nameof(UnityPool<T>)}] Prefab not assigned.");
-                enabled = false;
-                return;
-            }
-
-            _pool = new Pool<T>(
-                createFunc: CreateInstance,
-                preload: preloadAmount
-            );
-        }
-
-        public T Get()
-        {
-            T item = _pool.Get();
-            item.transform.SetParent(null, false);
-            item.gameObject.SetActive(true);
-            return item;
-        }
-
-        public void Release(T item)
-        {
-            item.gameObject.SetActive(false);
-            if (poolRoot != null)
-                item.transform.SetParent(poolRoot, false);
-            _pool.Release(item);
-        }
-
-        private T CreateInstance()
-        {
-            var obj = Instantiate(prefab, poolRoot);
-            obj.gameObject.SetActive(false);
-            return obj;
+            return archetype;
         }
     }
 }
