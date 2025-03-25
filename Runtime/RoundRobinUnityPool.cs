@@ -4,7 +4,7 @@ namespace Utils
 {
     public class RoundRobinUnityPool<T> : BaseUnityPool<T> where T : Component
     {
-        [SerializeField] private T[] archetypes;
+        [SerializeField] protected T[] archetypes;
         private int _currentIndex = 0;
 
         protected override T GetArchetype()
@@ -14,5 +14,10 @@ namespace Utils
             _currentIndex = (_currentIndex + 1) % archetypes.Length;
             return archetype;
         }
+        public void SetArchetypes(T[] availableTypes)
+        {
+            archetypes = availableTypes;
+        }
+        
     }
 }

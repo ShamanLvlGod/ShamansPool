@@ -26,13 +26,6 @@ namespace Utils
 
         protected virtual void Awake()
         {
-            if (GetArchetype() == null)
-            {
-                Debug.LogError($"[{GetType().Name}] No valid prefab found.");
-                enabled = false;
-                return;
-            }
-
             _pool = new Pool<T>(
                 createFunc: CreateInstance,
                 preload: preloadAmount
@@ -51,13 +44,23 @@ namespace Utils
         {
             item.gameObject.SetActive(false);
             if (poolRoot != null)
+            {
                 item.transform.SetParent(poolRoot, false);
+            }
+
             _pool.Release(item);
         }
 
         private T CreateInstance()
         {
+            if (GetArchetype() == null)
+            {
+                Debug.LogError($"[{GetType().Name}] No valid archetype found in a Pool to create from.");
+                return null;
+            }
+
             var obj = Instantiate(GetArchetype(), poolRoot);
+            obj.transform.localPosition = Vector3.zero;
             obj.gameObject.SetActive(false);
             return obj;
         }
